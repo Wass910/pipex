@@ -1,5 +1,18 @@
 #include "pipex.h"
 
+void	free_str(char **str)
+{
+	int	line;
+
+	line = 0;
+	while (str[line])
+	{
+		free(str[line]);
+		line++;
+	}
+	free(str);
+}
+
 char	*get_path(char **env)
 {
 	char	*path;
@@ -15,12 +28,18 @@ char	*get_path(char **env)
 int	what_path(char **path, char *cmd)
 {
 	int	i;
+	char	*str;
 
 	i = 0;
 	while (path[i])
 	{
-		if (access(ft_strcat(path[i], cmd), F_OK) == 0)
+		str = ft_strcat(path[i], cmd);
+		if (access(str, F_OK) == 0)
+		{
+			free(str);
 			return (i);
+		}
+		free(str);
 		i++;
 	}
 	return (-1);
@@ -37,6 +56,7 @@ t_data	path1(t_data data, char *command, char **env)
 	good_path = ft_split(path, ':');
 	i = what_path(good_path, data.cmd1[0]);
 	data.path1 = ft_strcat(good_path[i], data.cmd1[0]);
+	free_str(good_path);
 	return (data);
 }
 
@@ -51,5 +71,6 @@ t_data	path2(t_data data, char *command, char **env)
 	good_path = ft_split(path, ':');
 	i = what_path(good_path, data.cmd2[0]);
 	data.path2 = ft_strcat(good_path[i], data.cmd2[0]);
+	free_str(good_path);
 	return (data);
 }

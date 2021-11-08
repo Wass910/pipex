@@ -63,5 +63,9 @@ int	main(int argc, char **argv, char **env)
 	dup2(data.read_file, STDIN);
 	dup2(data.write_file, STDOUT);
 	pipex(data);
+	free(data.path1);
+	free(data.path2);
+	free_str(data.cmd1);
+	free_str(data.cmd2);
 	return (0);
 }

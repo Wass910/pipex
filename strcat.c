@@ -43,5 +43,6 @@ char	*ft_strcat(char *dest, char *src)
 		++j;
 	}
 	tmp[i++] = '\0';
+
 	return (tmp);
 }

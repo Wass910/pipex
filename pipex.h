@@ -34,4 +34,5 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strcat(char *dest, char *src);
 t_data	path2(t_data data, char *command, char **env);
 t_data	path1(t_data data, char *command, char **env);
+void	free_str(char **str);
 #endif
