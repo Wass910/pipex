@@ -32,7 +32,6 @@ int	open_file(char *filename, t_data data)
 		free_str(data.cmd2);
 		exit(EXIT_FAILURE);
 	}
-	
 	if (access(filename, F_OK) == 0)
 		return (open(filename, O_RDONLY));
 	else
@@ -73,6 +72,19 @@ void	pipex(t_data data)
 	}
 }
 
+void	ft_cant_open(t_data data)
+{
+	if (data.read_file == -1 || data.write_file == -1)
+	{
+		free(data.path1);
+		free(data.path2);
+		free_str(data.cmd1);
+		free_str(data.cmd2);
+		write(1, "Can't open this file, sorry.\n", 29);
+		exit(EXIT_FAILURE);
+	}
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_data	data;
@@ -86,15 +98,7 @@ int	main(int argc, char **argv, char **env)
 	data = path2(data, argv[3], env);
 	data.read_file = open_file(argv[1], data);
 	data.write_file = open_file2(argv[4]);
-	if (data.read_file == -1 || data.write_file == -1)
-	{
-		free(data.path1);
-		free(data.path2);
-		free_str(data.cmd1);
-		free_str(data.cmd2);
-		write(1, "Can't open this file, sorry.\n", 29);
-		exit(EXIT_FAILURE);
-	}
+	ft_cant_open(data);
 	dup2(data.read_file, STDIN);
 	dup2(data.write_file, STDOUT);
 	pipex(data);
