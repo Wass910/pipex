@@ -6,7 +6,7 @@
 /*   By: idhiba <idhiba@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 12:52:19 by idhiba            #+#    #+#             */
-/*   Updated: 2021/11/08 15:36:35 by idhiba           ###   ########.fr       */
+/*   Updated: 2021/11/09 15:42:27 by idhiba           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,27 @@ int	open_file2(char *filename)
 	return (-1);
 }
 
-int	open_file(char *filename)
+int	open_file(char *filename, t_data data)
 {
+	if (open(filename, __O_DIRECTORY) != -1)
+	{
+		write(1, "the file is a directory.\n", 25);
+		free(data.path1);
+		free(data.path2);
+		free_str(data.cmd1);
+		free_str(data.cmd2);
+		exit(EXIT_FAILURE);
+	}
+	
 	if (access(filename, F_OK) == 0)
 		return (open(filename, O_RDONLY));
 	else
 	{
 		write(1, "The file doesn't exist.\n", 24);
+		free(data.path1);
+		free(data.path2);
+		free_str(data.cmd1);
+		free_str(data.cmd2);
 		exit(EXIT_FAILURE);
 	}
 	return (-1);
@@ -68,15 +82,19 @@ int	main(int argc, char **argv, char **env)
 		write(1, "Invalid number of arguments.\n", 29);
 		exit(EXIT_FAILURE);
 	}
-	data.read_file = open_file(argv[1]);
+	data = path1(argv[2], env);
+	data = path2(data, argv[3], env);
+	data.read_file = open_file(argv[1], data);
 	data.write_file = open_file2(argv[4]);
 	if (data.read_file == -1 || data.write_file == -1)
 	{
+		free(data.path1);
+		free(data.path2);
+		free_str(data.cmd1);
+		free_str(data.cmd2);
 		write(1, "Can't open this file, sorry.\n", 29);
 		exit(EXIT_FAILURE);
 	}
-	data = path1(argv[2], env);
-	data = path2(data, argv[3], env);
 	dup2(data.read_file, STDIN);
 	dup2(data.write_file, STDOUT);
 	pipex(data);
