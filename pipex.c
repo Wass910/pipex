@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idhiba <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: idhiba <idhiba@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 12:52:19 by idhiba            #+#    #+#             */
-/*   Updated: 2021/11/08 12:52:21 by idhiba           ###   ########.fr       */
+/*   Updated: 2021/11/08 15:36:35 by idhiba           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	open_file2(char *filename)
 int	open_file(char *filename)
 {
 	if (access(filename, F_OK) == 0)
-		return (open(filename, O_RDWR));
+		return (open(filename, O_RDONLY));
 	else
 	{
 		write(1, "The file doesn't exist.\n", 24);
@@ -68,10 +68,15 @@ int	main(int argc, char **argv, char **env)
 		write(1, "Invalid number of arguments.\n", 29);
 		exit(EXIT_FAILURE);
 	}
-	data = path1(data, argv[2], env);
-	data = path2(data, argv[3], env);
 	data.read_file = open_file(argv[1]);
 	data.write_file = open_file2(argv[4]);
+	if (data.read_file == -1 || data.write_file == -1)
+	{
+		write(1, "Can't open this file, sorry.\n", 29);
+		exit(EXIT_FAILURE);
+	}
+	data = path1(argv[2], env);
+	data = path2(data, argv[3], env);
 	dup2(data.read_file, STDIN);
 	dup2(data.write_file, STDOUT);
 	pipex(data);
