@@ -1,2 +1,2 @@
 # pipex
-PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+Re-implementing shell pipes. Difficulty of the project 2/5.
